@@ -10,45 +10,52 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-    
+
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
-    
+
     - name: Setup Gradle 8.4
       run: |
         wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip
         unzip -q gradle-8.4-bin.zip
         echo "$PWD/gradle-8.4/bin" >> $GITHUB_PATH
-    
-    - name: Verify Gradle version
-      run: gradle --version
-    
-    - name: Build APK
-      run: |
-        gradle :app:assembleDebug --no-daemon --stacktrace
-    
-    - name: List APK
+
+    - name: Build Debug APK
+      run: gradle :app:assembleDebug --no-daemon
+
+    - name: Build Release APK
+      run: gradle :app:assembleRelease --no-daemon
+
+    - name: List APK files
       run: find app/build/outputs -name "*.apk" -type f
-    
-    - name: Upload APK
+
+    - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
-        name: RetroEngine-APK
+        name: RetroEngine-Debug
         path: app/build/outputs/apk/debug/
-        compression-level: 6
         overwrite: true
-    
+
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: RetroEngine-Release
+        path: app/build/outputs/apk/release/
+        overwrite: true
+
     - name: Create Release
       if: github.event_name == 'push'
       uses: softprops/action-gh-release@v2
       with:
-        files: app/build/outputs/apk/debug/app-debug.apk
+        files: |
+          app/build/outputs/apk/debug/app-debug.apk
+          app/build/outputs/apk/release/app-release.apk
         tag_name: v1.0.${{ github.run_number }}
         name: Release v1.0.${{ github.run_number }}
       env:
