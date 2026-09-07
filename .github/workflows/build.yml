@@ -20,31 +20,19 @@ jobs:
     - name: Set up Android SDK
       uses: android-actions/setup-android@v3
     
-    - name: Grant gradlew permission
-      run: chmod +x gradlew
-    
-    - name: Build Debug APK
+    - name: Setup Gradle
       run: |
-        ./gradlew clean
-        ./gradlew :app:assembleDebug
+        wget https://services.gradle.org/distributions/gradle-8.4-bin.zip
+        unzip gradle-8.4-bin.zip
+        export PATH=$PATH:$PWD/gradle-8.4/bin
     
-    - name: List APK
-      run: find app/build/outputs -name "*.apk" -type f
+    - name: Build APK
+      run: |
+        gradle assembleDebug
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: RetroEngine-APK
         path: app/build/outputs/apk/debug/
-        compression-level: 6
         overwrite: true
-    
-    - name: Create Release
-      if: github.event_name == 'push'
-      uses: softprops/action-gh-release@v2
-      with:
-        files: app/build/outputs/apk/debug/app-debug.apk
-        tag_name: v1.0.${{ github.run_number }}
-        name: Release v1.0.${{ github.run_number }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
