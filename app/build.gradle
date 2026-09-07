@@ -8,48 +8,52 @@ android {
 
     defaultConfig {
         applicationId "com.retroengine.app"
-        minSdk 24
+        minSdk 21          // Android 5.0 Lollipop (support Android 6 ke bawah)
         targetSdk 34
         versionCode 1
         versionName "1.0"
-        
+
+        multiDexEnabled true  // Untuk Android lama
+
         ndk {
             abiFilters 'arm64-v8a', 'armeabi-v7a'
-        }
-        
-        externalNativeBuild {
-            cmake {
-                cppFlags "-std=c++17"
-            }
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path "src/main/cpp/CMakeLists.txt"
-            version "3.22.1"
         }
     }
 
     buildTypes {
-        release { minifyEnabled false }
-        debug { minifyEnabled false }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.debug  // Debug signing untuk install
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+        }
     }
-    
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8  // Java 8 untuk Android lama
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-    
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
-    
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 }
 
@@ -59,4 +63,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.core:core:1.12.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
