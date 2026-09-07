@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Snake</title>
+<style>body{margin:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh}canvas{border:2px solid #4CAF50}</style>
+</head>
+<body><canvas id="g" width="400" height="400"></canvas>
+<script>
+const c=document.getElementById('g'),x=c.getContext('2d');
+let s=[{x:200,y:200}],d={x:20,y:0},f={x:100,y:100},sc=0;
+document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'&&d.y===0)d={x:0,y:-20};if(e.key==='ArrowDown'&&d.y===0)d={x:0,y:20};if(e.key==='ArrowLeft'&&d.x===0)d={x:-20,y:0};if(e.key==='ArrowRight'&&d.x===0)d={x:20,y:0};});
+function u(){const h={x:s[0].x+d.x,y:s[0].y+d.y};if(h.x===f.x&&h.y===f.y){sc++;f={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20};}else{s.pop();}if(h.x<0||h.x>=400||h.y<0||h.y>=400){alert('Score:'+sc);s=[{x:200,y:200}];sc=0;}s.unshift(h);}
+function r(){x.fillStyle='#000';x.fillRect(0,0,400,400);x.fillStyle='#4CAF50';s.forEach(p=>x.fillRect(p.x,p.y,20,20));x.fillStyle='#F00';x.fillRect(f.x,f.y,20,20);x.fillStyle='#FFF';x.font='20px Arial';x.fillText('Score:'+sc,10,20);}
+setInterval(()=>{u();r();},150);
+</script></body></html>
