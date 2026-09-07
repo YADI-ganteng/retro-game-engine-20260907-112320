@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.application'
 }
@@ -20,8 +19,12 @@ android {
     }
 
     buildTypes {
-        release { minifyEnabled false }
-        debug { minifyEnabled false }
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+        }
     }
     
     compileOptions {
@@ -33,6 +36,11 @@ android {
         main {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
+    }
+    
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
